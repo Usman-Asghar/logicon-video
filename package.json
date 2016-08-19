@@ -15,7 +15,7 @@
     "npm": ">=2.0.0"
   },
   "scripts": {
-    "start": "grunt prod",
+    "start": "grunt",
     "test": "grunt test",
     "postinstall": "bower install --config.interactive=false"
   },

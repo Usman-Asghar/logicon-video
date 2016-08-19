@@ -23,7 +23,7 @@ module.exports = {
     secure: false
   },
   // sessionSecret should be changed for security measures and concerns
-  sessionSecret: process.env.SESSION_SECRET || 'PEAN',
+  sessionSecret: process.env.SESSION_SECRET || 'Logicon',
   // sessionKey is set to the generic sessionId key used by PHP applications
   // for obsecurity reasons
   sessionKey: 'sessionId',
