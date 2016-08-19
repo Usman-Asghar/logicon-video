@@ -74,7 +74,7 @@ module.exports = {
   db: {
     options: {
       logging: process.env.DB_LOGGING === 'true' ? console.log : false,
-      host: process.env.DB_HOST || 'ec2-184-73-202-229.compute-1.amazonaws.com',
+      host: process.env.DB_HOST || 'ec2-50-17-212-238.compute-1.amazonaws.com',
       port: process.env.DB_PORT || '5432'
     },
     sync: {
