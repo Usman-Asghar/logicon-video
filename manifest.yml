@@ -1,0 +1,7 @@
+---
+applications:
+- name: pean
+  host: pean-${random-word}
+  memory: 128M
+  env:
+    NODE_ENV: cloud-foundry

@@ -1,2 +1,1 @@
-# logicon-video
-An video Script
+#Logicon-video.JS
