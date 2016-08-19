@@ -16,8 +16,6 @@
   },
   "scripts": {
     "start": "grunt",
-    "start:prod": "grunt prod",
-    "test": "grunt test",
     "postinstall": "bower install --config.interactive=false"
   },
   "dependencies": {

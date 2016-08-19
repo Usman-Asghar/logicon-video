@@ -4,7 +4,7 @@
 	"repository": "https://github.com/Usman-Asghar/logicon-video",
 	"keywords": ["video", "logicon"],
 	"scripts": {
-    "start": "grunt prod",
+    "start": "grunt",
     "postinstall": "bower install --config.interactive=false"
   },
 	"addons": ["heroku-postgresql"]
