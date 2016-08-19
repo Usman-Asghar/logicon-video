@@ -2,7 +2,6 @@
 	"name": "Logicon Video",
 	"description": "logicon product.",
 	"repository": "https://github.com/Usman-Asghar/logicon-video",
-	"logo": "",
 	"keywords": ["video", "logicon"],
 	"scripts": {
     "start": "grunt prod",
