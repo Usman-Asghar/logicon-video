@@ -23,7 +23,7 @@ exports.forgot = function(req, res, next) {
   if (req.body.email) {
     var emailValidate = emailRE.test(req.body.email);
     if(!emailValidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid email format',
         error: true
       });
@@ -126,7 +126,7 @@ exports.forgot = function(req, res, next) {
   }
   else
   {
-    return res.status(400).send({
+    return res.status(422).send({
       message: 'Missing Parameters',
       error: true
     }); 
@@ -316,8 +316,9 @@ exports.changePassword = function(req, res, next) {
                       if (err) {
                         return res.status(400).send(err);
                       } else {
-                        return res.send({
-                          message: 'Password changed successfully'
+                        return res.status(200).send({
+                          message: 'Password changed successfully',
+                          error: false
                         });
                       }
                     });
@@ -326,22 +327,26 @@ exports.changePassword = function(req, res, next) {
                   })
                   .catch(function(err) {
                     return res.status(400).send({
-                      message: errorHandler.getErrorMessage(err)
+                      message: errorHandler.getErrorMessage(err),
+                      error: true
                     });
                   });
               } else {
-                res.status(400).send({
-                  message: 'Passwords do not match'
+                res.status(422).send({
+                  message: 'Passwords do not match',
+                  error: true
                 });
               }
             } else {
-              res.status(400).send({
-                message: 'Current password is incorrect'
+              res.status(422).send({
+                message: 'Current password is incorrect',
+                error: true
               });
             }
           } else {
             res.status(400).send({
-              message: 'User is not found'
+              message: 'User is not found',
+              error: true
             });
           }
 
@@ -352,13 +357,15 @@ exports.changePassword = function(req, res, next) {
         });
 
     } else {
-      res.status(400).send({
-        message: 'Please provide a new password'
+      res.status(422).send({
+        message: 'Please provide a new password',
+        error: true
       });
     }
   } else {
     res.status(400).send({
-      message: 'User is not signed in'
+      message: 'User is not signed in',
+      error: true
     });
   }
 };

@@ -55,12 +55,14 @@ exports.update = function(req, res) {
       })
       .catch(function(err) {
         return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
+          message: errorHandler.getErrorMessage(err),
+          error: true
         });
       });
   } else {
     res.status(400).send({
-      message: 'User is not signed in'
+      message: 'User is not signed in',
+      error: true
     });
   }
 };

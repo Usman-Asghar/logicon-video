@@ -48,7 +48,7 @@ exports.checkusername = function(req, res) {
         });
       });
   } else{
-    return res.status(400).send({
+    return res.status(422).send({
       message: 'Username field must not be blank',
       error: true
     });
@@ -62,7 +62,7 @@ exports.chekemail = function(req, res) {
   if (req.body.email) {
     var emailvalidate = emailRE.test(req.body.email);
     if(!emailvalidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid email format',
         error: true
       });
@@ -95,7 +95,7 @@ exports.chekemail = function(req, res) {
         });
     }
   } else{
-    return res.status(400).send({
+    return res.status(422).send({
       message: 'Email field must not be blank',
       error: true
     });
@@ -111,13 +111,13 @@ exports.signup = function(req, res) {
     var emailValidate = emailRE.test(req.body.email);
     var passwordValidate = passwordRE.test(req.body.password);
     if(!emailValidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid email format',
         error: true
       });
     }
     else if(!passwordValidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid password format',
         error: true
       });
@@ -206,7 +206,7 @@ exports.signup = function(req, res) {
   }
   else
   {
-    return res.status(400).send({
+    return res.status(422).send({
       message: 'Missing Parameters',
       error: true
     });  
@@ -221,13 +221,13 @@ exports.signin = function(req, res, next) {
     var emailValidate = emailRE.test(req.body.email);
     var passwordValidate = passwordRE.test(req.body.password);
     if(!emailValidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid email format',
         error: true
       });
     }
     else if(!passwordValidate){
-      return res.status(400).send({
+      return res.status(422).send({
         message: 'Invalid password format',
         error: true
       });
@@ -269,7 +269,7 @@ exports.signin = function(req, res, next) {
   }
   else
   {
-    return res.status(400).send({
+    return res.status(422).send({
       message: 'Missing Parameters',
       error: true
     });
