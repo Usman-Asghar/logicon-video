@@ -21,68 +21,31 @@ var passwordRE = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,
  * Check Email
 */
 exports.checkusername = function(req, res) {
-  if (req.body.username) {
-    db.User
-      .findOne({
-        where: {
-          username: req.body.username
-        }
-      })
-      .then(function(user) {
-        if (user) {
-          return res.status(400).send({
-            message: 'Username found',
-            error: true
-          });
-        } else{
-          return res.status(200).send({
-            message: 'No username found',
-            error: false
-          });
-        }
-      })
-      .catch(function(err) {
-        return res.status(400).send({
-          message: errorHandler.getErrorMessage(err),
-          error: true
-        });
-      });
-  } else{
-    return res.status(422).send({
-      message: 'Username field must not be blank',
-      error: true
-    });
-  }
-};
-
-/**
- * Check Username
-*/
-exports.chekemail = function(req, res) {
-  if (req.body.email) {
-    var emailvalidate = emailRE.test(req.body.email);
-    if(!emailvalidate){
-      return res.status(422).send({
-        message: 'Invalid email format',
+  if (req.body.username !== undefined) {
+    if(req.body.username === '')
+    {
+      return res.status(400).send({
+        message: 'Empty Parameters',
         error: true
       });
     }
-    else{
+    else
+    {
       db.User
         .findOne({
           where: {
-            email: req.body.email
+            username: req.body.username
           }
         })
         .then(function(user) {
           if (user) {
-            return res.status(400).send({
-              message: 'Email found',
+            return res.status(200).send({
+              message: 'Username found',
               error: true
             });
           } else{
             return res.status(200).send({
-              message: 'No email found',
+              message: 'No username found',
               error: false
             });
           }
@@ -95,8 +58,65 @@ exports.chekemail = function(req, res) {
         });
     }
   } else{
-    return res.status(422).send({
-      message: 'Email field must not be blank',
+    return res.status(400).send({
+      message: 'Insufficent Parameters',
+      error: true
+    });
+  }
+};
+
+/**
+ * Check Username
+*/
+exports.chekemail = function(req, res) {
+  if (req.body.email !== undefined) {
+    if(req.body.email === '')
+    {
+      return res.status(400).send({
+        message: 'Empty Parameters',
+        error: true
+      });
+    }
+    else
+    {
+      var emailvalidate = emailRE.test(req.body.email);
+      if(!emailvalidate){
+        return res.status(200).send({
+          message: 'Invalid email format',
+          error: true
+        });
+      }
+      else{
+        db.User
+          .findOne({
+            where: {
+              email: req.body.email
+            }
+          })
+          .then(function(user) {
+            if (user) {
+              return res.status(200).send({
+                message: 'Email found',
+                error: true
+              });
+            } else{
+              return res.status(200).send({
+                message: 'No email found',
+                error: false
+              });
+            }
+          })
+          .catch(function(err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err),
+              error: true
+            });
+          });
+      }
+    }
+  } else{
+    return res.status(400).send({
+      message: 'Insufficent Parameters',
       error: true
     });
   }
@@ -107,107 +127,117 @@ exports.chekemail = function(req, res) {
  */
 exports.signup = function(req, res) {
   // For security measurement we remove the roles from the req.body object
-  if (req.body.email && req.body.password) {
-    var emailValidate = emailRE.test(req.body.email);
-    var passwordValidate = passwordRE.test(req.body.password);
-    if(!emailValidate){
-      return res.status(422).send({
-        message: 'Invalid email format',
+  if (req.body.email !== undefined && req.body.password !== undefined) {
+    if(req.body.email === '' || req.body.password === '')
+    {
+      return res.status(400).send({
+        message: 'Empty Parameters',
         error: true
       });
     }
-    else if(!passwordValidate){
-      return res.status(422).send({
-        message: 'Invalid password format',
-        error: true
-      });
-    }
-    else{
-      delete req.body.roles;
-
-      // Init Variables
-      var message = null;
-
-      // Add missing user fields
-      var provider = 'local';
-
-      // Save user
-      db.User
-        .create({
-          email: req.body.email,
-          username: null,
-          password: req.body.password,
-          salt: req.body.salt,
-          profileImageURL: null,
-          provider: provider,
-          providerData: null,
-          additionalProvidersData: null,
-          resetPasswordToken: null,
-          resetPasswordExpires: null,
-          active: 1,
-          verified: 1
-        })
-        .then(function(user) {
-          // Find role
-          db.Role
-            .findOne({
-              where: {
-                name: 'user'
-              }
-            })
-            .then(function(role) {
-              // Add role
-              user
-                .addRoles(role)
-                .then(function(role) {
-
-                  user.dataValues.roles = ['user'];
-
-                  user.dataValues.password = null;
-                  user.dataValues.salt = null;
-
-                  user._previousDataValues.password = null;
-                  user._previousDataValues.salt = null;
-                  // Login
-                  req.login(user, function(err) {
-                    if (err) {
-                      return res.status(400).send(err);
-                    } else {
-                      return res.json(user);
-                    }
-                  });
-
-                  return null;
-                })
-                .catch(function(err) {
-                  return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err),
-                    error: true
-                  });
-                });
-              return null;
-            })
-            .catch(function(err) {
-              return res.status(400).send({
-                message: errorHandler.getErrorMessage(err),
-                error: true
-              });
-            });
-
-          return null;
-        })
-        .catch(function(err) {
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err),
-            error: true
-          });
+    else
+    {
+      var emailValidate = emailRE.test(req.body.email);
+      var passwordValidate = passwordRE.test(req.body.password);
+      if(!emailValidate){
+        return res.status(200).send({
+          message: 'Invalid email format',
+          error: true
         });
+      }
+      else if(!passwordValidate){
+        return res.status(200).send({
+          message: 'Invalid password format',
+          error: true
+        });
+      }
+      else{
+        delete req.body.roles;
+
+        // Init Variables
+        var message = null;
+
+        // Add missing user fields
+        var provider = 'local';
+
+        // Save user
+        db.User
+          .create({
+            email: req.body.email,
+            username: null,
+            password: req.body.password,
+            salt: req.body.salt,
+            profileImageURL: null,
+            provider: provider,
+            providerData: null,
+            additionalProvidersData: null,
+            resetPasswordToken: null,
+            resetPasswordExpires: null,
+            active: 1,
+            verified: 1
+          })
+          .then(function(user) {
+            // Find role
+            db.Role
+              .findOne({
+                where: {
+                  name: 'user'
+                }
+              })
+              .then(function(role) {
+                // Add role
+                user
+                  .addRoles(role)
+                  .then(function(role) {
+
+                    user.dataValues.roles = ['user'];
+
+                    user.dataValues.password = null;
+                    user.dataValues.salt = null;
+
+                    user._previousDataValues.password = null;
+                    user._previousDataValues.salt = null;
+                    // Login
+                    req.login(user, function(err) {
+                      if (err) {
+                        return res.status(400).send(err);
+                      } else {
+                        return res.json(user);
+                      }
+                    });
+
+                    return null;
+                  })
+                  .catch(function(err) {
+                    return res.status(400).send({
+                      message: errorHandler.getErrorMessage(err),
+                      error: true
+                    });
+                  });
+                return null;
+              })
+              .catch(function(err) {
+                return res.status(400).send({
+                  message: errorHandler.getErrorMessage(err),
+                  error: true
+                });
+              });
+
+            return null;
+          })
+          .catch(function(err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err),
+              error: true
+            });
+          });
+      }
     }
   }
   else
   {
-    return res.status(422).send({
-      message: 'Missing Parameters',
+    return res.status(400).send({
+      message: 'Insufficent Parameters',
       error: true
     });  
   }
@@ -217,60 +247,70 @@ exports.signup = function(req, res) {
  * Signin after passport authentication
  */
 exports.signin = function(req, res, next) {
-  if (req.body.email && req.body.password) {
-    var emailValidate = emailRE.test(req.body.email);
-    var passwordValidate = passwordRE.test(req.body.password);
-    if(!emailValidate){
-      return res.status(422).send({
-        message: 'Invalid email format',
+  if (req.body.email !== undefined && req.body.password !== undefined) {
+    if(req.body.email === '' || req.body.password === '')
+    {
+      return res.status(400).send({
+        message: 'Empty Parameters',
         error: true
       });
     }
-    else if(!passwordValidate){
-      return res.status(422).send({
-        message: 'Invalid password format',
-        error: true
-      });
-    }
-    else{
-      passport.authenticate('local', function(err, user, info) {
-        if (err || !user) {
-          res.status(400).send(info);
-        } else {
-          req.login(user, function(err) {
-            if (err) {
-              res.status(400).send(err);
-            } else {
-              user
-                .getRoles()
-                .then(function(roles) {
-                  var rolesArray = [];
+    else
+    {
+      var emailValidate = emailRE.test(req.body.email);
+      var passwordValidate = passwordRE.test(req.body.password);
+      if(!emailValidate){
+        return res.status(200).send({
+          message: 'Invalid email format',
+          error: true
+        });
+      }
+      else if(!passwordValidate){
+        return res.status(200).send({
+          message: 'Invalid password format',
+          error: true
+        });
+      }
+      else{
+        passport.authenticate('local', function(err, user, info) {
+          if (err || !user) {
+            res.status(400).send(info);
+          } else {
+            req.login(user, function(err) {
+              if (err) {
+                res.status(400).send(err);
+              } else {
+                user
+                  .getRoles()
+                  .then(function(roles) {
+                    var rolesArray = [];
 
-                  roles.map(function(dataValues) {
-                    rolesArray.push(dataValues.name);
-                  });
+                    roles.map(function(dataValues) {
+                      rolesArray.push(dataValues.name);
+                    });
 
-                  user.dataValues.roles = rolesArray;
-                  user.dataValues.password = null;
-                  user.dataValues.salt = null;
-                  return res.json(user);
-                })
-                .catch(function(err) {
-                  return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err),
-                    error: true
+                    user.dataValues.roles = rolesArray;
+                    user.dataValues.password = null;
+                    user.dataValues.salt = null;
+                    return res.json(user);
+                  })
+                  .catch(function(err) {
+                    return res.status(400).send({
+                      message: errorHandler.getErrorMessage(err),
+                      error: true
+                    });
                   });
-                });
-            }
-          });
-        }
-      })(req, res, next);
+              }
+            });
+          }
+        })(req, res, next);
+      }
     }
   }
   else
   {
-    return res.status(422).send({
-      message: 'Missing Parameters',
+    return res.status(400).send({
+      message: 'Insufficent Parameters',
       error: true
     });
   }
