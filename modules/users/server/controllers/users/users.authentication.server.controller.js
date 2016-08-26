@@ -24,7 +24,7 @@ exports.checkusername = function(req, res) {
   if (req.body.username !== undefined) {
     if(req.body.username === '')
     {
-      return res.status(400).send({
+      return res.status(200).send({
         message: 'Empty Parameters',
         error: true
       });
@@ -51,7 +51,7 @@ exports.checkusername = function(req, res) {
           }
         })
         .catch(function(err) {
-          return res.status(400).send({
+          return res.status(200).send({
             message: errorHandler.getErrorMessage(err),
             error: true
           });
@@ -59,7 +59,7 @@ exports.checkusername = function(req, res) {
     }
   } else{
     return res.status(400).send({
-      message: 'Insufficent Parameters',
+      message: 'insufficient Parameters',
       error: true
     });
   }
@@ -72,7 +72,7 @@ exports.chekemail = function(req, res) {
   if (req.body.email !== undefined) {
     if(req.body.email === '')
     {
-      return res.status(400).send({
+      return res.status(200).send({
         message: 'Empty Parameters',
         error: true
       });
@@ -107,7 +107,7 @@ exports.chekemail = function(req, res) {
             }
           })
           .catch(function(err) {
-            return res.status(400).send({
+            return res.status(200).send({
               message: errorHandler.getErrorMessage(err),
               error: true
             });
@@ -116,7 +116,7 @@ exports.chekemail = function(req, res) {
     }
   } else{
     return res.status(400).send({
-      message: 'Insufficent Parameters',
+      message: 'insufficient Parameters',
       error: true
     });
   }
@@ -130,7 +130,7 @@ exports.signup = function(req, res) {
   if (req.body.email !== undefined && req.body.password !== undefined) {
     if(req.body.email === '' || req.body.password === '')
     {
-      return res.status(400).send({
+      return res.status(200).send({
         message: 'Empty Parameters',
         error: true
       });
@@ -200,7 +200,7 @@ exports.signup = function(req, res) {
                     // Login
                     req.login(user, function(err) {
                       if (err) {
-                        return res.status(400).send(err);
+                        return res.status(200).send(err);
                       } else {
                         return res.json(user);
                       }
@@ -209,7 +209,7 @@ exports.signup = function(req, res) {
                     return null;
                   })
                   .catch(function(err) {
-                    return res.status(400).send({
+                    return res.status(200).send({
                       message: errorHandler.getErrorMessage(err),
                       error: true
                     });
@@ -217,7 +217,7 @@ exports.signup = function(req, res) {
                 return null;
               })
               .catch(function(err) {
-                return res.status(400).send({
+                return res.status(200).send({
                   message: errorHandler.getErrorMessage(err),
                   error: true
                 });
@@ -226,7 +226,7 @@ exports.signup = function(req, res) {
             return null;
           })
           .catch(function(err) {
-            return res.status(400).send({
+            return res.status(200).send({
               message: errorHandler.getErrorMessage(err),
               error: true
             });
@@ -237,7 +237,7 @@ exports.signup = function(req, res) {
   else
   {
     return res.status(400).send({
-      message: 'Insufficent Parameters',
+      message: 'Insufficient Parameters',
       error: true
     });  
   }
@@ -250,7 +250,7 @@ exports.signin = function(req, res, next) {
   if (req.body.email !== undefined && req.body.password !== undefined) {
     if(req.body.email === '' || req.body.password === '')
     {
-      return res.status(400).send({
+      return res.status(200).send({
         message: 'Empty Parameters',
         error: true
       });
@@ -274,11 +274,11 @@ exports.signin = function(req, res, next) {
       else{
         passport.authenticate('local', function(err, user, info) {
           if (err || !user) {
-            res.status(400).send(info);
+            res.status(200).send(info);
           } else {
             req.login(user, function(err) {
               if (err) {
-                res.status(400).send(err);
+                res.status(200).send(err);
               } else {
                 user
                   .getRoles()
@@ -295,7 +295,7 @@ exports.signin = function(req, res, next) {
                     return res.json(user);
                   })
                   .catch(function(err) {
-                    return res.status(400).send({
+                    return res.status(200).send({
                       message: errorHandler.getErrorMessage(err),
                       error: true
                     });
@@ -310,7 +310,7 @@ exports.signin = function(req, res, next) {
   else
   {
     return res.status(400).send({
-      message: 'Insufficent Parameters',
+      message: 'insufficient Parameters',
       error: true
     });
   }

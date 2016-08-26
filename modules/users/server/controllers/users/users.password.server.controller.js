@@ -23,7 +23,7 @@ exports.forgot = function(req, res, next) {
   if (req.body.email !== undefined) {
     if(req.body.email === '')
     {
-      return res.status(400).send({
+      return res.status(200).send({
         message: 'Empty Parameters',
         error: true
       });
@@ -32,7 +32,7 @@ exports.forgot = function(req, res, next) {
     {
       var emailValidate = emailRE.test(req.body.email);
       if(!emailValidate){
-        return res.status(422).send({
+        return res.status(200).send({
           message: 'Invalid email format',
           error: true
         });
@@ -59,7 +59,7 @@ exports.forgot = function(req, res, next) {
               .then(function(user) {
 
                 if (user.provider !== 'local') {
-                  return res.status(400).send({
+                  return res.status(200).send({
                     message: 'It seems like you signed up using your ' + user.provider + ' account',
                     status: true
                   });
@@ -74,7 +74,7 @@ exports.forgot = function(req, res, next) {
                       return null;
                     })
                     .catch(function(err) {
-                      return res.status(400).send({
+                      return res.status(200).send({
                         message: errorHandler.getErrorMessage(err),
                         status: true
                       });
@@ -84,7 +84,7 @@ exports.forgot = function(req, res, next) {
                 return null;
               })
               .catch(function(err) {
-                return res.status(400).send({
+                return res.status(200).send({
                   message: 'No account account with that email',
                   status: true
                 });
@@ -117,7 +117,7 @@ exports.forgot = function(req, res, next) {
                   error: false
                 });
               } else {
-                return res.status(400).send({
+                return res.status(200).send({
                   message: err,
                   error: true
                 });
@@ -136,8 +136,8 @@ exports.forgot = function(req, res, next) {
   }
   else
   {
-    return res.status(422).send({
-      message: 'Missing Parameters',
+    return res.status(400).send({
+      message: 'insufficient Parameters',
       error: true
     }); 
   }
@@ -168,7 +168,7 @@ exports.validateResetToken = function(req, res) {
       return res.redirect('/password/reset/' + req.params.token);
     })
     .catch(function(err) {
-      return res.status(400).send({
+      return res.status(200).send({
         message: errorHandler.getErrorMessage(err)
       });
     });
@@ -221,7 +221,7 @@ exports.reset = function(req, res, next) {
 
                       req.login(user, function(err) {
                         if (err) {
-                          res.status(400).send(err);
+                          res.status(200).send(err);
                           return null;
                         } else {
                           // Return authenticated user
@@ -237,17 +237,17 @@ exports.reset = function(req, res, next) {
                   return null;
                 })
                 .catch(function(err) {
-                  return res.status(400).send({
+                  return res.status(200).send({
                     message: errorHandler.getErrorMessage(err)
                   });
                 });
             } else {
-              return res.status(400).send({
+              return res.status(200).send({
                 message: 'Passwords do not match'
               });
             }
           } else {
-            return res.status(400).send({
+            return res.status(200).send({
               message: 'Password reset token is invalid or has expired.'
             });
           }
@@ -255,7 +255,7 @@ exports.reset = function(req, res, next) {
           return null;
         })
         .catch(function(err) {
-          return res.status(400).send({
+          return res.status(200).send({
             message: errorHandler.getErrorMessage(err)
           });
         });
@@ -324,7 +324,7 @@ exports.changePassword = function(req, res, next) {
                   .then(function() {
                     req.login(user, function(err) {
                       if (err) {
-                        return res.status(400).send(err);
+                        return res.status(200).send(err);
                       } else {
                         return res.status(200).send({
                           message: 'Password changed successfully',
@@ -336,25 +336,25 @@ exports.changePassword = function(req, res, next) {
                     return null;
                   })
                   .catch(function(err) {
-                    return res.status(400).send({
+                    return res.status(200).send({
                       message: errorHandler.getErrorMessage(err),
                       error: true
                     });
                   });
               } else {
-                res.status(422).send({
+                res.status(200).send({
                   message: 'Passwords do not match',
                   error: true
                 });
               }
             } else {
-              res.status(422).send({
+              res.status(200).send({
                 message: 'Current password is incorrect',
                 error: true
               });
             }
           } else {
-            res.status(400).send({
+            res.status(200).send({
               message: 'User is not found',
               error: true
             });
@@ -367,13 +367,13 @@ exports.changePassword = function(req, res, next) {
         });
 
     } else {
-      res.status(422).send({
+      res.status(200).send({
         message: 'Please provide a new password',
         error: true
       });
     }
   } else {
-    res.status(400).send({
+    res.status(200).send({
       message: 'User is not signed in',
       error: true
     });
