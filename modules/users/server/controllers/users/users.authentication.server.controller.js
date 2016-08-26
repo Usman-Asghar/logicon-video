@@ -258,16 +258,9 @@ exports.signin = function(req, res, next) {
     else
     {
       var emailValidate = emailRE.test(req.body.email);
-      var passwordValidate = passwordRE.test(req.body.password);
       if(!emailValidate){
         return res.status(200).send({
           message: 'Invalid email format',
-          error: true
-        });
-      }
-      else if(!passwordValidate){
-        return res.status(200).send({
-          message: 'Invalid password format',
           error: true
         });
       }
