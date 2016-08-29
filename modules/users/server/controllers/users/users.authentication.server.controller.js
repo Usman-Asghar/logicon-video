@@ -6,8 +6,9 @@
 var path = require('path'),
   db = require(path.resolve('./config/lib/sequelize')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
-  passport = require('passport');
-var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+  passport = require('passport'),
+  jwt = require('jwt-simple'),
+  moment = require('moment');
 // URLs for which user can't be redirected on signin
 var noReturnUrls = [
   '/authentication/signin',
@@ -277,10 +278,15 @@ exports.signin = function(req, res, next) {
                   .getRoles()
                   .then(function(roles) {
                     var rolesArray = [];
+                    var expires = moment().add(7,'days').valueOf();
+                    var token = jwt.encode({
+                      iss: user.id,
+                      exp: expires
+                    }, 'TOPSECRET');
                     roles.map(function(dataValues) {
                       rolesArray.push(dataValues.name);
                     });
-
+                    user.dataValues.token = token;
                     user.dataValues.roles = rolesArray;
                     user.dataValues.password = null;
                     user.dataValues.salt = null;

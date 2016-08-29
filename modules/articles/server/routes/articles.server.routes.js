@@ -4,11 +4,13 @@
  * Module dependencies
  */
 var articlesPolicy = require('../policies/articles.server.policy'),
-  articles = require('../controllers/articles.server.controller');
+  path = require('path'),
+  articles = require('../controllers/articles.server.controller'),
+  jwtauth = require(path.resolve('./config/jwtauth'));
 
 module.exports = function(app) {
   // Articles collection routes
-  app.route('/api/articles').all(articlesPolicy.isAllowed)
+  app.route('/api/articles').all([articlesPolicy.isAllowed,jwtauth.auth])
     .get(articles.list)
     .post(articles.create);
 
