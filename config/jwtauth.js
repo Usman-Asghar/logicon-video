@@ -16,16 +16,16 @@ exports.auth = function(req, res, next) {
         });
       }
       else{
-      	if(req.user.dataValues.id == decoded.iss)
+        if(req.user.dataValues.id === decoded.iss)
         {
           return next();
         }
         else
         {
           return res.status(400).json({
-		    error: true,
-		    message: 'Access token is Invalid'
-		  });
+            error: true,
+            message: 'Access token is Invalid'
+          });
         }
       }
     } catch (err) {
@@ -36,8 +36,8 @@ exports.auth = function(req, res, next) {
     }
   } else {
     return res.status(400).json({
-	  error: true,
-	  message: 'Access token not found'
-	});
+      error: true,
+      message: 'Access token not found'
+    });
   }
 };
